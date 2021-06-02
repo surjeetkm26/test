@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-dep
+  labels:
+    app: casino
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: casino
+  template:
+    metadata:
+      labels:
+        app: casini
+    spec:
+      containers:
+      - name: http-casino
+        image: dockerrock123/casino:v1
+        ports:
+        - containerPort: 80
+        imagePullPolicy: Always
+        env:
+          - name: API_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: myconfigmap
+                key: api.username
+          - name: API_FIRSTNAME
+            valueFrom:
+              configMapKeyRef:
+                name: myconfigmap
+                key: api.firstname
+          - name: API_LASTNAME
+            valueFrom:
+              configMapKeyRef:
+                name: myconfigmap
+                key: api.lastname
+          - name: API_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: api.secret    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: replaceme
+  labels:
+    app: casino
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+  selector:
+    app: casino

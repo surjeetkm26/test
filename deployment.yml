@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: casini
+        app: casino
     spec:
       containers:
       - name: http-casino
